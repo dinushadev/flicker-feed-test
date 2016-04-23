@@ -62,7 +62,7 @@ app.get('/search/:tags', function(req, res) {
 
     var tags = req.param("tags");
     var url = 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + tags;
-    console.log('taggssssssssssssssssssss ' + url);
+   
 
     var searchReq = request(url);
     var feedparser = new FeedParser();
