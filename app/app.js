@@ -1,7 +1,5 @@
-/*expressSeed.config(function() {
-    //
-});
+/* exported expressSeed */
+var expressSeed = angular.module('expressSeed', ['ngSanitize']);
 
-expressSeed.run(function() {
-    //
-});*/
+
+

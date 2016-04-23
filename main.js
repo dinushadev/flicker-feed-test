@@ -9,50 +9,20 @@ var FeedParser = require('feedparser');
 var fs = require('fs');
 
 var app = module.exports = express();
-/*
-var globalConfig = {
-    minify: process.env.MINIFY == 'yes' ? true : false,
-    environment: process.env.ENVIRONMENT || 'local'
-};
-*/
+
 var rootPath = path.dirname(__dirname);
 var port = Number(process.env.PORT || 8080);
+
+var flickerFeedEndPoint = 'https://api.flickr.com/services/feeds/photos_public.gne';
 
 app.use(express.static(__dirname + '/app/'));
 app.set('views', __dirname + '/app');
 app.engine('html', cons.handlebars);
 app.set('view engine', 'html');
-
-/*if (globalConfig.environment == 'local') {
-    app.use(require('connect-livereload')());
-}
-*/
 app.use(cookieParser());
 
-/*app.use(function(req, res, next) {
-    var config = configFromReq(req);
-    var parsedUrl = url.parse(req.url);
-    var splittedPath = parsedUrl.pathname.split(path.sep);
-
-    if (splittedPath[1]) {
-        var fileExtension = getFileExtension(parsedUrl.pathname);
-        if (fileExtension == 'js' || fileExtension == 'css') {
-            addPathPrefix(splittedPath, getMinPrefix(config));
-        }
-    }
-
-    parsedUrl.pathname = splittedPath.join(path.sep);
-    req.url = url.format(parsedUrl);
-
-    req.config = config;
-    next();
-});
-*/
-//app.use('/', express.static(path.join(rootPath, 'app')));
 
 app.get('/', function(req, res) {
-
-
     res.render('/app/index.html');
 });
 
@@ -61,14 +31,11 @@ app.get('/search/:tags', function(req, res) {
     var potoList = [];
 
     var tags = req.param("tags");
-    var url = 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + tags;
-   
-
-    var searchReq = request(url);
+    var url = flickerFeedEndPoint+'?tags=' + tags;
     var feedparser = new FeedParser();
 
     searchReq.on('error', function(error) {
-        // handle any request errors
+       console.error("Unexpected Error thrown "+error);
     });
     searchReq.on('response', function(res) {
         var stream = this;
@@ -78,10 +45,8 @@ app.get('/search/:tags', function(req, res) {
         stream.pipe(feedparser);
     });
 
-
     feedparser.on('error', function(error) {
-        // always handle errors
-        console.log(error);
+        console.error("Unexpected Error thrown "+error);
     });
     feedparser.on('readable', function() {
         // This is where the action is!
@@ -105,14 +70,13 @@ app.get('/search/:tags', function(req, res) {
         res.send(potoList);
     });
 
-
 });
 
 
 app.get('/feeds', function(req, res) {
     var potoList = [];
 
-    var url = 'https://api.flickr.com/services/feeds/photos_public.gne';
+    var url = flickerFeedEndPoint;
 
     var req = request(url);
     var feedparser = new FeedParser();
@@ -128,17 +92,13 @@ app.get('/feeds', function(req, res) {
         stream.pipe(feedparser);
     });
 
-
     feedparser.on('error', function(error) {
-        // always handle errors
-        console.log(error);
+          console.error("Unexpected Error thrown "+error);
     });
     feedparser.on('readable', function() {
         // This is where the action is!
         var stream = this,
-            meta = this.meta // **NOTE** the "meta" is always available in the context of the feedparser instance
-            ,
-            item;
+            meta = this.meta ,item;
 
         while (item = stream.read()) {
             // /  console.log(item);
@@ -155,7 +115,6 @@ app.get('/feeds', function(req, res) {
         res.send(potoList);
     });
 
-
 });
 
 app.use(function(req, res) {
@@ -166,23 +125,3 @@ app.listen(port, function() {
     console.log('Server listening on port ' + port);
 });
 
-/*function renderIndex(config, res) {
-    res.render(getMinPrefix(config) + '/views/index');
-}
-
-function configFromReq(req) {
-    var config = {};
-    config.minify = req.cookies.minify == 'true' ? true : false;
-    return config;
-}
-
-
-
-function addPathPrefix(filePath, prefix) {
-    filePath.splice(1, 0, prefix);
-}
-
-function getFileExtension(filePath) {
-    return filePath.split('.').pop();
-}
-*/
