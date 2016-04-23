@@ -1,8 +1,9 @@
 angular.module('FlickerApp')
-    .controller('FeedListCtrl', ['$scope', 'FeedSvc', '$sce', '$rootScope',
-        function($scope, FeedSvc, $sce, $rootScope) {
+    .controller('FeedListCtrl', ['$scope', 'FeedSvc', '$sce',
+        function($scope, FeedSvc, $sce) {
 
             var self = this;
+            self.searchVal = "";
 
             FeedSvc.loadFeeds();
 
@@ -13,9 +14,14 @@ angular.module('FlickerApp')
             };
 
             self.search = function() {
-                FeedSvc.searchByTag($scope.searchVal, function(err, data) {
-                    self.feedList = data;
-                });
+                if (self.searchVal ) {
+                    FeedSvc.searchByTag(self.searchVal, function(err, data) {
+                        self.feedList = data;
+                    });
+                } else {
+                    //
+                }
+
             };
 
 
