@@ -34,6 +34,7 @@ app.get('/search/:tags', function(req, res) {
     var url = flickerFeedEndPoint+'?tags=' + tags;
     var feedparser = new FeedParser();
 
+    var searchReq = request(url);
     searchReq.on('error', function(error) {
        console.error("Unexpected Error thrown "+error);
     });

@@ -1,5 +1,5 @@
 /* exported expressSeed */
-var expressSeed = angular.module('expressSeed', ['ngSanitize']);
+var expressSeed = angular.module('FlickerApp', ['ngSanitize']);
 
 
 

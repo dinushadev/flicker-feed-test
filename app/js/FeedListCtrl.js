@@ -1,4 +1,4 @@
-angular.module('expressSeed')
+angular.module('FlickerApp')
     .controller('FeedListCtrl', ['$scope', 'FeedSvc', '$sce', '$rootScope',
         function($scope, FeedSvc, $sce, $rootScope) {
 

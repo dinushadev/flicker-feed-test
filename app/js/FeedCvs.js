@@ -1,4 +1,4 @@
-angular.module('expressSeed').factory('FeedSvc', function($http) {
+angular.module('FlickerApp').factory('FeedSvc', function($http) {
     var feeds = {};
     feeds.feedList = [];
 
